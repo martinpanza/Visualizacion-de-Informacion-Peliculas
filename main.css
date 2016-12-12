@@ -1,0 +1,30 @@
+#div-1 {
+	position:relative;
+}
+#main-graph {
+	position:absolute;
+	top:0;
+	left:0;
+	width:66vw;
+}
+#filter {
+	position:absolute;
+	top:0;
+	right:0vw;
+	width:30vw;
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}

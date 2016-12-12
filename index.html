@@ -1,161 +1,211 @@
 <!DOCTYPE html>
-<html>
 <meta charset="utf-8">
 
-<!-- Example based on http://bl.ocks.org/mbostock/3887118 -->
-<!-- Tooltip example from http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html -->
+<head>
+	
+	<link rel="stylesheet" type="text/css" href="main.css">
+	<!-- Libraries.js -->
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<script src="//d3js.org/d3.v3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
 
-<style>
-body {
-  font: 11px sans-serif;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-.dot {
-  stroke: #000;
-}
-
-.tooltip {
-  position: absolute;
-  width: 200px;
-  height: 28px;
-  pointer-events: none;
-}
-</style>
 <body>
-<script src="//d3js.org/d3.v3.min.js"></script>
+	<div id="div-1">
+		<div id="main-graph"></div>
+		<div id="filter">
+			<center><h3>Filter</h3></center>
+			<table>
+			  <tr>
+			    <td><input type="checkbox" id="text-valid">Text:<br></td>
+			    <td><input type="text" id="text-value"><br></td>
+			  </tr>
+			  <tr>
+			    <td><input type="checkbox" id="genre-valid">Genre:<br></td>
+			    <td><select id="genre-value"></select><br></td>
+			  </tr>
+			  <tr>
+			    <td><input type="checkbox" id="country-valid">Country:<br></td>
+			    <td><select id="country-value"></select><br></td>
+			  </tr>
+			  <tr>
+			    <td><input type="checkbox" id="year-valid">Year:<br></td>
+			    <td><input type="text" id="year-value" readonly style="border:0">
+				<div id="year-range"></div><br></td>
+			  </tr>
+			  <tr>
+			    <td><input type="checkbox" id="rating-valid">Ratings:<br></td>
+			    <td><input type="text" id="rating-value" readonly style="border:0">
+				<div id="rating-range"></div><br></td>
+			  </tr>
+			  <tr>
+			    <td><input type="checkbox" id="temporal-lines">Add temporal lines.<br></td>
+			    <td><button onclick="search(false)">Search</button><br></td>
+			  </tr>
+			</table>
+		</div>
+	</div>
+	<script>
+		
+	</script>
+	<script>
+		var ratingArray=["Passed",
+						"Approved",
+						"TV-Y",
+						"TV-G",
+						"G",
+						"PG",
+						"GP",
+						"TV-PG",
+						"TV-Y7",
+						"TV-14",
+						"PG-13",
+						"NC-17",
+						"R",
+						"TV-MA",
+						"M",
+						"X",
+						"Not Rated",
+						"Unrated",
+						""];
+		var genres = [];
+		var countries = [];
+		var ratings = [];
+		var minYear=2000;
+		var maxYear=2000;
+		function search(first){
+			Plotly.d3.csv('movie_metadata.csv', function(err, rows){
+				function unpack(rows, key) {
+					return rows.map(function(row) { return row[key]; });
+				}
+				var values={};
+				var text=document.getElementById("text-value").value.toLowerCase();
+				var genre=document.getElementById("genre-value").value;
+				var country=document.getElementById("country-value").value;
 
-<script>
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
-
-/* 
- * value accessor - returns the value to encode for a given data object.
- * scale - maps value to a visual display encoding, such as a pixel position.
- * map function - maps from data value to display value
- * axis - sets up axis
- */ 
-
-// setup x 
-var xValue = function(d) { return d.duration;}, // data -> value
-    xScale = d3.scale.linear().range([0, width]), // value -> display
-    xMap = function(d) { return xScale(xValue(d));}, // data -> display
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
-
-// setup y
-var yValue = function(d) { return d.imdb_score;}, // data -> value
-    yScale = d3.scale.linear().range([height, 0]), // value -> display
-    yMap = function(d) { return yScale(yValue(d));}, // data -> display
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
-
-// setup fill color
-var cValue = function(d) { return d.genres.split("|")[0];},
-    color = d3.scale.category10();
-
-// add the graph canvas to the body of the webpage
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// add the tooltip area to the webpage
-var tooltip = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-// load data
-d3.csv("movie_metadata.csv", function(error, data) {
-
-  // change string (from CSV) into number format
-  data.forEach(function(d) {
-    d.duration = +d.duration;
-    d.imdb_score = +d.imdb_score;
-//    console.log(d);
-  });
-
-  // don't want dots overlapping axis, so add in buffer to data domain
-  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-  yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
-
-  // x-axis
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("x", width)
-      .attr("y", -6)
-      .style("text-anchor", "end")
-      .text("Duration [min]");
-
-  // y-axis
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Score [1 to 10]");
-
-  // draw dots
-  svg.selectAll(".dot")
-      .data(data)
-    .enter().append("circle")
-      .attr("class", "dot")
-      .attr("r", 3.5)
-      .attr("cx", xMap)
-      .attr("cy", yMap)
-      .style("fill", function(d) { return color(cValue(d));}) 
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", .9);
-          tooltip.html(d["movie_title"] + "<br/> (" + xValue(d) 
-	        + ", " + yValue(d) + ")")
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px");
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0);
-      });
-
-  // draw legend
-  var legend = svg.selectAll(".legend")
-      .data(color.domain())
-    .enter().append("g")
-      .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  // draw legend colored rectangles
-  legend.append("rect")
-      .attr("x", width - 18)
-      .attr("width", 18)
-      .attr("height", 18)
-      .style("fill", color);
-
-  // draw legend text
-  legend.append("text")
-      .attr("x", width - 24)
-      .attr("y", 9)
-      .attr("dy", ".35em")
-      .style("text-anchor", "end")
-      .text(function(d) { return d;})
-});
-
-</script>
+				var years=["2016","2016"];
+				var ratings=["PG","PG"];
+				if (!first) years=document.getElementById("year-value").value.split(" - ");
+				if (!first) ratings=document.getElementById("rating-value").value.split(" - ");
+				years=[parseInt(years[0]),parseInt(years[1])];
+				ratings=[ratingArray.indexOf(ratings[0]),ratingArray.indexOf(ratings[1])];
+				var textValid=document.getElementById("text-valid").checked;
+				var genreValid=document.getElementById("genre-valid").checked;
+				var countryValid=document.getElementById("country-valid").checked;
+				var yearValid=document.getElementById("year-valid").checked;
+				var ratingValid=document.getElementById("rating-valid").checked;
+				var temporalLines=document.getElementById("temporal-lines").checked;
+			
+				var rowsFiltered = rows.filter(function(row) {
+					row.genres=row.genres.split("|");
+					var year=parseInt(row.title_year);
+					var rating=ratingArray.indexOf(row.content_rating);
+					if (first){
+						for (var i in row.genres) {
+						  if (!genres.includes(row.genres[i])) {
+							genres.push(row.genres[i]);
+						  }
+						}
+						if (!countries.includes(row.country)) {
+							countries.push(row.country);
+						}
+						if (!ratings.includes(row.content_rating)){
+							ratings.push(row.content_rating);	
+						}
+						if (!isNaN(year)){
+							if (minYear>year) minYear=year;
+							if (maxYear<year) maxYear=year;
+						}
+					}
+					return (!textValid || row.movie_title.toLowerCase().includes(text)) 
+						&& (!genreValid || row.genres.includes(genre)) 
+						&& (!countryValid || row.country===country)
+						&& (!yearValid || (!isNaN(year) && year>=years[0] && year<=years[1]))
+						&& (!ratingValid || (rating>=ratings[0] && rating<=ratings[1]));
+				});
+				if (first){
+					console.log(genres);
+					console.log(countries);
+					console.log(ratings);
+					console.log(minYear);
+					console.log(maxYear);
+					genres.sort();
+					countries.sort();
+					selectGenre = document.getElementById('genre-value');
+					for (var i in genres) {
+						var opt = document.createElement('option');
+						opt.value = genres[i];
+						opt.innerHTML = genres[i];
+						selectGenre.appendChild(opt);  
+					}
+					selectCountry = document.getElementById('country-value');
+					for (var i in countries) {
+						var opt = document.createElement('option');
+						opt.value = countries[i];
+						opt.innerHTML = countries[i];
+						selectCountry.appendChild(opt);  
+					}
+					$(function() {
+						$("#year-range").slider({
+							range: true,
+							min: minYear,
+							max: maxYear,
+							values: [minYear,maxYear],
+							slide: function( event, ui ) {
+								$("#year-value").val( ui.values[0]+" - "+ui.values[1]);
+							}
+						});
+						$( "#year-value" ).val($( "#year-range" ).slider( "values", 0 ) + " - " + $( "#year-range" ).slider( "values", 1 ) );
+					});
+					$(function() {
+						$("#rating-range").slider({
+							range: true,
+							min: 0,
+							max: ratingArray.length-1,
+							values: [0,ratingArray.length-1],
+							slide: function( event, ui ) {
+								$("#rating-value").val( ratingArray[ui.values[0]]+" - "+ratingArray[ui.values[1]]);
+							}
+						});
+						$( "#rating-value" ).val(ratingArray[$( "#rating-range" ).slider( "values", 0 )] + " - " + ratingArray[$( "#rating-range" ).slider( "values", 1 )] );
+					});
+				}
+				var nameArray=[];
+				if (textValid) nameArray.push("Text: "+text);
+				if (genreValid) nameArray.push("Genre: "+genre);
+				if (countryValid) nameArray.push("Country: "+country);
+				if (yearValid) nameArray.push("Years: "+years[0]+"-"+years[1]);
+				if (ratingValid) nameArray.push("Ratings: "+ratingArray[ratings[0]]+"-"+ratingArray[ratings[1]]);
+				var name=nameArray.join('<br>');
+				if (nameArray.length===0) name="Everything";
+				var mode;
+				if (temporalLines) mode='lines+markers';
+				else mode='markers';
+				var data = [
+				{
+					name: name,
+					type: 'scatter',
+					x: unpack(rowsFiltered, 'duration'),
+					y: unpack(rowsFiltered, 'imdb_score'),
+					mode: mode,
+					text: unpack(rowsFiltered, 'movie_title'),
+					marker: { size: 12 }
+				}];
+				var layout = {
+					xaxis: {title: 'Duration [min]'},
+					yaxis: {title: 'Score [1 to 10]'},
+					margin: {t: 20},
+					hovermode: 'closest'
+				};
+				Plotly.plot('main-graph', data, layout);
+			});
+		}
+		search(true);
+		window.onresize = function() {
+			Plotly.Plots.resize(d3.select('#main-graph').node());
+		};
+	</script>
 </body>
-</html>
