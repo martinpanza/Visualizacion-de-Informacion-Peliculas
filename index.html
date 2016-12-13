@@ -11,47 +11,99 @@
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script>
+		$( function() {
+			$( "#filter" ).tabs();
+		} );
+	</script>
 </head>
 
 <body>
-	<div id="div-1">
+	<div id="div-1">		
 		<div id="main-graph"></div>
-		<div id="filter">
-			<center><h3>Filter</h3></center>
-			<table>
-			  <tr>
-			    <td><input type="checkbox" id="text-valid">Text:<br></td>
-			    <td><input type="text" id="text-value"><br></td>
-			  </tr>
-			  <tr>
-			    <td><input type="checkbox" id="genre-valid">Genre:<br></td>
-			    <td><select id="genre-value"></select><br></td>
-			  </tr>
-			  <tr>
-			    <td><input type="checkbox" id="country-valid">Country:<br></td>
-			    <td><select id="country-value"></select><br></td>
-			  </tr>
-			  <tr>
-			    <td><input type="checkbox" id="year-valid">Year:<br></td>
-			    <td><input type="text" id="year-value" readonly style="border:0">
-				<div id="year-range"></div><br></td>
-			  </tr>
-			  <tr>
-			    <td><input type="checkbox" id="rating-valid">Ratings:<br></td>
-			    <td><input type="text" id="rating-value" readonly style="border:0">
-				<div id="rating-range"></div><br></td>
-			  </tr>
-			  <tr>
-			    <td><input type="checkbox" id="temporal-lines">Add temporal lines.<br></td>
-			    <td><button onclick="search(false)">Search</button><br></td>
-			  </tr>
-			</table>
 		</div>
+		<div id="count-graph"></div>
+		<div id="budget-gross-graph"></div>
+		<div id="filter">
+			<ul>
+				<li><a href="#movie-filter">Movie</a></li>
+				<li><a href="#people-filter">People</a></li>
+				<li><a href="#options">Options</a></li>
+			</ul>
+			<div id="movie-filter">
+				<table>
+					<tr>
+						<td><input type="checkbox" id="text-valid">Text:<br></td>
+						<td><input type="text" id="text-value"><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="genre-valid">Genre:<br></td>
+						<td><select id="genre-value"></select><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="country-valid">Country:<br></td>
+						<td><select id="country-value"></select><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="year-valid">Year:<br></td>
+						<td><input type="text" id="year-value" readonly style="border:0">
+						<div id="year-range"></div><br></td>
+				 	</tr>
+				 	<tr>
+						<td><input type="checkbox" id="rating-valid">Ratings:<br></td>
+						<td><input type="text" id="rating-value" readonly style="border:0">
+						<div id="rating-range"></div><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="temporal-lines">Add temporal lines.<br></td>
+						<td><button onclick="search(false)">Search</button><br></td>
+					</tr>
+				</table>
+			</div>
+			<div id="people-filter">
+				<table>
+					<tr>
+						<td><input type="checkbox" id="director-valid">Director:<br></td>
+						<td><select id="director-value"></select><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="actor1-valid">Actor 1:<br></td>
+						<td><select id="actor1-value"></select><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="actor2-valid">Actor 2:<br></td>
+						<td><select id="actor2-value"></select><br></td>
+					</tr>
+					<tr>
+						<td><input type="checkbox" id="actor3-valid">Actor 3:<br></td>
+						<td><select id="actor3-value"></select><br></td>
+					</tr>
+					<tr>
+						<td><br></td>
+						<td><button onclick="searchByPeople()">Search</button><br></td>
+					</tr>
+				</table>
+			</div>
+			<div id="options">
+				<table>
+					<tr>
+						<td><button onclick="budgetAndGrossTogether()">Budget And Gross in the same graph</button><br></td>
+						<td><button onclick="budgetAndGrossSeparated()">Budget And Gross in separated graphs</button><br></td>
+					</tr>
+				</table>
+			</div>
+		</div>	
 	</div>
 	<script>
 		
 	</script>
 	<script>
+		//var menu1=document.getElementById("movie-filter");
+		//var menu2=document.getElementById("people-filter");
+	//	var menu3=document.getElementById("options");
+	//	var button1=document.getElementById("searchByMovieButton");
+	//	var button2=document.getElementById("searchByPeopleButton");
+	//	var button3=document.getElementById("optionsButton");
 		var ratingArray=["Passed",
 						"Approved",
 						"TV-Y",
@@ -74,6 +126,7 @@
 		var genres = [];
 		var countries = [];
 		var ratings = [];
+		var queries = [];
 		var minYear=2000;
 		var maxYear=2000;
 		function search(first){
@@ -99,6 +152,11 @@
 				var ratingValid=document.getElementById("rating-valid").checked;
 				var temporalLines=document.getElementById("temporal-lines").checked;
 			
+				var grossCount=0;
+				var grossSum=0;
+				var budgetCount=0;
+				var budgetSum=0;
+
 				var rowsFiltered = rows.filter(function(row) {
 					row.genres=row.genres.split("|");
 					var year=parseInt(row.title_year);
@@ -120,11 +178,24 @@
 							if (maxYear<year) maxYear=year;
 						}
 					}
-					return (!textValid || row.movie_title.toLowerCase().includes(text)) 
+					var ans = (!textValid || row.movie_title.toLowerCase().includes(text)) 
 						&& (!genreValid || row.genres.includes(genre)) 
 						&& (!countryValid || row.country===country)
 						&& (!yearValid || (!isNaN(year) && year>=years[0] && year<=years[1]))
 						&& (!ratingValid || (rating>=ratings[0] && rating<=ratings[1]));
+					if (ans){
+						var budget=parseInt(row.budget);
+						if (!isNaN(budget)){
+							budgetSum+=budget;
+							budgetCount++;
+						}
+						var gross=parseInt(row.gross);
+						if (!isNaN(gross)){
+							grossSum+=gross;
+							grossCount++;	
+						}
+					}
+					return ans;
 				});
 				if (first){
 					console.log(genres);
@@ -195,17 +266,110 @@
 					marker: { size: 12 }
 				}];
 				var layout = {
+					title: 'Duration vs IMDB Score',
 					xaxis: {title: 'Duration [min]'},
 					yaxis: {title: 'Score [1 to 10]'},
-					margin: {t: 20},
+					margin: {t: 60},
 					hovermode: 'closest'
 				};
 				Plotly.plot('main-graph', data, layout);
+				if (!queries.includes(name)){
+					queries.push(name);
+					var myx=[];
+					myx.push(name);
+					var myy=[];
+					console.log(rowsFiltered.length);
+					myy.push(rowsFiltered.length);
+					data = [
+					{
+						name: name,
+						type: 'bar',
+						x: myx,
+						y: myy,
+						marker: { size: 12 }
+					}];
+					layout = {
+						yaxis: {title: 'Amount'},
+						margin: {t: 20}
+					};
+					Plotly.plot('count-graph', data, layout);
+
+					myx=[];
+					myx.push(name);
+					myy=[];
+					myy.push(1.0*budgetSum/budgetCount);
+					data = [
+					{
+						name: name+' budget',
+						type: 'bar',
+						x: myx,
+						y: myy,
+						marker: { size: 12 }
+					}];
+					layout = {
+						yaxis: {title: 'Budget & Gross Mean'},
+						margin: {t: 20}
+					};
+					Plotly.plot('budget-gross-graph', data, layout);
+
+					myx=[];
+					myx.push(name);
+					myy=[];
+					myy.push(1.0*grossSum/grossCount);
+					data = [
+					{
+						name: name+' gross',
+						type: 'bar',
+						x: myx,
+						y: myy,
+						marker: { size: 12 }
+					}];
+					layout = {
+						yaxis: {title: 'Budget & Gross Mean'},
+						margin: {t: 20}
+					};
+					Plotly.plot('budget-gross-graph', data, layout);	
+				}
 			});
 		}
 		search(true);
 		window.onresize = function() {
 			Plotly.Plots.resize(d3.select('#main-graph').node());
+			Plotly.Plots.resize(d3.select('#count-graph').node());
+			Plotly.Plots.resize(d3.select('#budget-gross-graph').node());
 		};
+		function showSearchByMovie(){
+			menu1.style.display = 'block'; 
+			menu2.style.display = 'none'; 
+			menu3.style.display = 'none'; 
+			button1.style.borderBottom = 'none';
+			button1.style.background = 'white'; 
+			button2.style.borderBottom = 'solid';
+			//button2.style.background = 'gray';
+			button3.style.borderBottom = 'solid';
+			//button3.style.background = 'gray';
+		}
+		function showSearchByPeople(){
+			menu1.style.display = 'none'; 
+			menu2.style.display = 'block'; 
+			menu3.style.display = 'none'; 
+			button1.style.borderBottom = 'solid';
+			//button1.style.background = 'gray'; 
+			button2.style.borderBottom = 'none';
+			button2.style.background = 'white';
+			button3.style.borderBottom = 'solid';
+			//button3.style.background = 'gray';
+		}
+		function showOptions(){
+			menu1.style.display = 'none'; 
+			menu2.style.display = 'none'; 
+			menu3.style.display = 'block'; 
+			button1.style.borderBottom = 'solid';
+			//button1.style.background = 'gray'; 
+			button2.style.borderBottom = 'solid';
+			//button2.style.background = 'gray';
+			button3.style.borderBottom = 'none';
+			button3.style.background = 'white';
+		}
 	</script>
 </body>
