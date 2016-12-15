@@ -1,44 +1,91 @@
 :root {
   --height: 400px;
-  --second: 410px;
-}
-#div-1 {
-	position:relative;
-	var(--height);
+  --second: 400px;
+  --third: 800px;
 }
 #main-graph {
 	position:absolute;
-	top: 0vh;
-	left: 0vw;
-	width: 68vw;
+	top: 0%;
+	left: 0%;
+	width: 69%;
 	height: var(--height);
+	border:1px solid black;
 }
 #filter {
 	position:absolute;
-	top: 0vh;
-	right: 0vw;
-	width: 30vw;
+	top: 0%;
+	right: 0%;
+	width: 30%;
 	height: var(--height);
 }
-#count-graph {
+#movie-filter{
+	height: 80%;
+	overflow: auto;
+}
+#people-filter{
+	height: 80%;
+	overflow: auto;
+}
+#options{
+	height: 80%;
+	overflow: auto;
+}
+#title {
+	height: 80%;
+	overflow: auto;
+}
+#amount-graph {
 	position:absolute;
 	top: var(--second);
-	left: 0;
-	width: 50vw;
+	left: 0%;
+	width: 50%;
 	height: var(--height);
+	border:1px solid black;
 }
 #budget-gross-graph {
 	position:absolute;
 	top: var(--second);
-	right: 0vw;
-	width: 50vw;
+	right: 0%;
+	width: 50%;
 	height: var(--height);
+	border:1px solid black;
+}
+#gross-graph {
+	position:absolute;
+	top: var(--second);
+	right: 0%;
+	width: 50%;
+	height: var(--height);
+	border:1px solid black;
+}
+#budget-graph {
+	position:absolute;
+	top: var(--second);
+	right: 0%;
+	width: 50%;
+	height: var(--height);
+	border:1px solid black;
+}
+#score-box-graph {
+	position:absolute;
+	top: var(--third);
+	left: 0%;
+	width: 50%;
+	height: var(--height);
+	border:1px solid black;
+}
+#score-year-graph {
+	position:absolute;
+	top: var(--third);
+	right: 0%;
+	width: 50%;
+	height: var(--height);
+	border:1px solid black;
 }
 table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
-    height: 100%;
 }
 
 button {

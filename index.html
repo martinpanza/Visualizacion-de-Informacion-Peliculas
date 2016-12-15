@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script>
 		$( function() {
-			$( "#filter" ).tabs();
+			$("#filter").tabs();
 		} );
 	</script>
 </head>
@@ -22,88 +22,173 @@
 	<div id="div-1">		
 		<div id="main-graph"></div>
 		</div>
-		<div id="count-graph"></div>
-		<div id="budget-gross-graph"></div>
 		<div id="filter">
 			<ul>
 				<li><a href="#movie-filter">Movie</a></li>
-				<li><a href="#people-filter">People</a></li>
+				<li><a href="#people-filter" id="people-link">People</a></li>
 				<li><a href="#options">Options</a></li>
+				<li><a href="#title" id="title-link">Title</a></li>
 			</ul>
 			<div id="movie-filter">
 				<table>
 					<tr>
-						<td><input type="checkbox" id="text-valid">Text:<br></td>
-						<td><input type="text" id="text-value"><br></td>
+						<td><input type="checkbox" id="text-valid">Text:</td>
+						<td><input type="text" id="text-value"></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="genre-valid">Genre:<br></td>
-						<td><select id="genre-value"></select><br></td>
+						<td><input type="checkbox" id="genre-valid">Genre:</td>
+						<td><select id="genre-value"></select></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="country-valid">Country:<br></td>
-						<td><select id="country-value"></select><br></td>
+						<td><input type="checkbox" id="country-valid">Country:</td>
+						<td><select id="country-value"></select></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="year-valid">Year:<br></td>
+						<td><input type="checkbox" id="year-valid">Year:</td>
 						<td><input type="text" id="year-value" readonly style="border:0">
-						<div id="year-range"></div><br></td>
+						<div id="year-range"></div></td>
 				 	</tr>
 				 	<tr>
-						<td><input type="checkbox" id="rating-valid">Ratings:<br></td>
+						<td><input type="checkbox" id="rating-valid">Ratings:</td>
 						<td><input type="text" id="rating-value" readonly style="border:0">
-						<div id="rating-range"></div><br></td>
+						<div id="rating-range"></div></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="temporal-lines">Add temporal lines.<br></td>
-						<td><button onclick="search(false)">Search</button><br></td>
+						<td><input type="checkbox" id="temporal-lines1">Add temporal lines.</td>
+						<td><button onclick="search(false,0)">Search</button></td>
 					</tr>
 				</table>
 			</div>
 			<div id="people-filter">
 				<table>
 					<tr>
-						<td><input type="checkbox" id="director-valid">Director:<br></td>
-						<td><select id="director-value"></select><br></td>
+						<td><input type="checkbox" id="director-valid">Director:</td>
+						<td><select id="director-value"></select></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="actor1-valid">Actor 1:<br></td>
-						<td><select id="actor1-value"></select><br></td>
+						<td><input type="checkbox" id="actor1-valid">Actor 1:</td>
+						<td><select id="actor1-value"></select></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="actor2-valid">Actor 2:<br></td>
-						<td><select id="actor2-value"></select><br></td>
+						<td><input type="checkbox" id="actor2-valid">Actor 2:</td>
+						<td><select id="actor2-value"></select></td>
 					</tr>
 					<tr>
-						<td><input type="checkbox" id="actor3-valid">Actor 3:<br></td>
-						<td><select id="actor3-value"></select><br></td>
+						<td><input type="checkbox" id="actor3-valid">Actor 3:</td>
+						<td><select id="actor3-value"></select></td>
 					</tr>
 					<tr>
-						<td><br></td>
-						<td><button onclick="searchByPeople()">Search</button><br></td>
+						<td><input type="checkbox" id="temporal-lines2">Add temporal lines.</td>
+						<td><button onclick="search(false,1)">Search</button></td>
 					</tr>
 				</table>
 			</div>
 			<div id="options">
 				<table>
 					<tr>
-						<td><button onclick="budgetAndGrossTogether()">Budget And Gross in the same graph</button><br></td>
-						<td><button onclick="budgetAndGrossSeparated()">Budget And Gross in separated graphs</button><br></td>
+						<td>Bar chart data:</td>
+						<td><input type="radio" name="barChartOption" onclick="budgetAndGross()" checked>Budget and Gross</td>
+						<td><input type="radio" name="barChartOption" onclick="grossOnly()">Gross</td>
+						<td><input type="radio" name="barChartOption" onclick="budgetOnly()">Budget</td>
+					</tr>
+					<tr>
+						<td>Graphs in the Middle:</td>
+						<td><input type="radio" name="graphsOption" onclick="barChartsPreference()" checked>Bar Charts</td>
+						<td><input type="radio" name="graphsOption" onclick="distributionsPreference()">Distributions</td>
 					</tr>
 				</table>
 			</div>
-		</div>	
+			<div id="title">
+				<table>
+					<tr>
+						<td>Title:</td>
+						<td id="title-title"></td>
+					</tr>
+					<tr>
+						<td>Year:</td>
+						<td id="title-year"></td>
+					</tr>
+					<tr>
+						<td>Director:</td>
+						<td id="title-director"></td>
+					</tr>
+					<tr>
+						<td>Actor 1:</td>
+						<td id="title-actor1"></td>
+					</tr>
+					<tr>
+						<td>Actor 2:</td>
+						<td id="title-actor2"></td>
+					</tr>
+					<tr>
+						<td>Actor 3:</td>
+						<td id="title-actor3"></td>
+					</tr>
+					<tr>
+						<td>Duration:</td>
+						<td id="title-duration"></td>
+					</tr>
+					<tr>
+						<td>IMDb Score:</td>
+						<td id="title-score"></td>
+					</tr>
+					<tr>
+						<td>Language:</td>
+						<td id="title-language"></td>
+					</tr>
+					<tr>
+						<td>Content Rating:</td>
+						<td id="title-rating"></td>
+					</tr>
+					<tr>
+						<td>Genres:</td>
+						<td id="title-genres"></td>
+					</tr>
+					<tr>
+						<td>Country:</td>
+						<td id="title-country"></td>
+					</tr>
+					<tr>
+						<td>Tags:</td>
+						<td id="title-tags"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div id="amount-graph"></div>
+		<div id="budget-gross-graph"></div>
+		<div id="budget-graph" style="display:none"></div>
+		<div id="gross-graph" style="display:none"></div>
+		<div id="score-box-graph"></div>
+		<div id="score-year-graph"></div>
 	</div>
 	<script>
 		
 	</script>
 	<script>
-		//var menu1=document.getElementById("movie-filter");
-		//var menu2=document.getElementById("people-filter");
-	//	var menu3=document.getElementById("options");
-	//	var button1=document.getElementById("searchByMovieButton");
-	//	var button2=document.getElementById("searchByPeopleButton");
-	//	var button3=document.getElementById("optionsButton");
+		var titleTitle=document.getElementById('title-title');
+		var titleYear=document.getElementById('title-year');
+		var titleDirector=document.getElementById('title-director');
+		var titleActor1=document.getElementById('title-actor1');
+		var titleActor2=document.getElementById('title-actor2');
+		var titleActor3=document.getElementById('title-actor3');
+		var titleDuration=document.getElementById('title-duration');
+		var titleScore=document.getElementById('title-score');
+		var titleLanguage=document.getElementById('title-language');
+		var titleRating=document.getElementById('title-rating');
+		var titleGenres=document.getElementById('title-genres');
+		var titleCountry=document.getElementById('title-country');
+		var titleTags=document.getElementById('title-tags');
+
+		var titleLink=document.getElementById('title-link');
+		var peopleLink=document.getElementById('people-link');
+
+		var amountGraph=document.getElementById("amount-graph");
+		var budgetGraph=document.getElementById("budget-graph");
+		var grossGraph=document.getElementById("gross-graph");
+		var budgetAndGrossGraph=document.getElementById("budget-gross-graph");
+		var scoreBoxGraph=document.getElementById("score-box-graph");
+		var scoreYearGraph=document.getElementById("score-year-graph");
 		var ratingArray=["Passed",
 						"Approved",
 						"TV-Y",
@@ -124,12 +209,14 @@
 						"Unrated",
 						""];
 		var genres = [];
+		var directors = [];
+		var actors = [];
 		var countries = [];
 		var ratings = [];
 		var queries = [];
 		var minYear=2000;
 		var maxYear=2000;
-		function search(first){
+		function search(first,filter){
 			Plotly.d3.csv('movie_metadata.csv', function(err, rows){
 				function unpack(rows, key) {
 					return rows.map(function(row) { return row[key]; });
@@ -150,17 +237,60 @@
 				var countryValid=document.getElementById("country-valid").checked;
 				var yearValid=document.getElementById("year-valid").checked;
 				var ratingValid=document.getElementById("rating-valid").checked;
-				var temporalLines=document.getElementById("temporal-lines").checked;
-			
+				var temporalLines1=document.getElementById("temporal-lines1").checked;
+
 				var grossCount=0;
 				var grossSum=0;
 				var budgetCount=0;
 				var budgetSum=0;
 
+				/*Esto cambia  1*/
+				var yearRange = [];
+				var scoreSum = [];
+				var yearCount = [];
+
+				/*Esto tambien   2*/
+				for(var i = 1916; i <= 2016 ; i++){
+					yearRange.push(i);
+					scoreSum.push(0);
+					yearCount.push(0);
+				}
+
+				var directorCheck=document.getElementById("director-valid");
+				var actor1Check=document.getElementById("actor1-valid");
+				var actor2Check=document.getElementById("actor2-valid");
+				var actor3Check=document.getElementById("actor3-valid");
+
+
+				var directorValid=directorCheck.checked;
+				var actor1Valid=actor1Check.checked;
+				var actor2Valid=actor2Check.checked;
+				var actor3Valid=actor3Check.checked;
+
+				var director="";
+				var actor1="";
+				var actor2="";
+				var actor3="";
+
+				var directorValue=document.getElementById("director-value")
+				var actor1Value=document.getElementById("actor1-value")
+				var actor2Value=document.getElementById("actor2-value")
+				var actor3Value=document.getElementById("actor3-value")
+				if (!first) director=directorValue.value;
+				if (!first) actor1=actor1Value.value;
+				if (!first) actor2=actor2Value.value;
+				if (!first) actor3=actor3Value.value;
+
+				var temporalLines2=document.getElementById("temporal-lines2").checked;
+
 				var rowsFiltered = rows.filter(function(row) {
 					row.genres=row.genres.split("|");
 					var year=parseInt(row.title_year);
 					var rating=ratingArray.indexOf(row.content_rating);
+
+					/*Esto   3*/
+					var score=parseFloat(row.imdb_score);
+
 					if (first){
 						for (var i in row.genres) {
 						  if (!genres.includes(row.genres[i])) {
@@ -173,16 +303,37 @@
 						if (!ratings.includes(row.content_rating)){
 							ratings.push(row.content_rating);	
 						}
+						if (!directors.includes(row.director_name)){
+							directors.push(row.director_name);	
+						}
+						if (!actors.includes(row.actor_1_name)){
+							actors.push(row.actor_1_name);	
+						}
+						if (!actors.includes(row.actor_2_name)){
+							actors.push(row.actor_2_name);	
+						}
+						if (!actors.includes(row.actor_3_name)){
+							actors.push(row.actor_3_name);	
+						}
 						if (!isNaN(year)){
 							if (minYear>year) minYear=year;
 							if (maxYear<year) maxYear=year;
 						}
 					}
-					var ans = (!textValid || row.movie_title.toLowerCase().includes(text)) 
+					var ans=false;
+					if (filter===0){
+						ans = (!textValid || row.movie_title.toLowerCase().includes(text)) 
 						&& (!genreValid || row.genres.includes(genre)) 
 						&& (!countryValid || row.country===country)
 						&& (!yearValid || (!isNaN(year) && year>=years[0] && year<=years[1]))
 						&& (!ratingValid || (rating>=ratings[0] && rating<=ratings[1]));
+					}
+					else if (filter===1){
+						ans = (!directorValid || row.director_name===director) 
+						&& (!actor1Valid || row.actor_1_name===actor1 || row.actor_2_name===actor1 || row.actor_3_name===actor1)
+						&& (!actor2Valid || row.actor_1_name===actor2 || row.actor_2_name===actor2 || row.actor_3_name===actor2)
+						&& (!actor3Valid || row.actor_1_name===actor3 || row.actor_2_name===actor3 || row.actor_3_name===actor3)
+					}
 					if (ans){
 						var budget=parseInt(row.budget);
 						if (!isNaN(budget)){
@@ -193,6 +344,11 @@
 						if (!isNaN(gross)){
 							grossSum+=gross;
 							grossCount++;	
+						}
+						/*Esto  4*/
+						if (!isNaN(score)){
+							scoreSum[year-1916]+=score;
+							yearCount[year-1916]++;
 						}
 					}
 					return ans;
@@ -205,6 +361,8 @@
 					console.log(maxYear);
 					genres.sort();
 					countries.sort();
+					directors.sort();
+					actors.sort();
 					selectGenre = document.getElementById('genre-value');
 					for (var i in genres) {
 						var opt = document.createElement('option');
@@ -218,6 +376,34 @@
 						opt.value = countries[i];
 						opt.innerHTML = countries[i];
 						selectCountry.appendChild(opt);  
+					}
+					selectDirector = document.getElementById('director-value');
+					for (var i in directors) {
+						var opt = document.createElement('option');
+						opt.value = directors[i];
+						opt.innerHTML = directors[i];
+						selectDirector.appendChild(opt);  
+					}
+					selectActor1 = document.getElementById('actor1-value');
+					for (var i in actors) {
+						var opt = document.createElement('option');
+						opt.value = actors[i];
+						opt.innerHTML = actors[i];
+						selectActor1.appendChild(opt);  
+					}
+					selectActor2 = document.getElementById('actor2-value');
+					for (var i in actors) {
+						var opt = document.createElement('option');
+						opt.value = actors[i];
+						opt.innerHTML = actors[i];
+						selectActor2.appendChild(opt);  
+					}
+					selectActor3 = document.getElementById('actor3-value');
+					for (var i in actors) {
+						var opt = document.createElement('option');
+						opt.value = actors[i];
+						opt.innerHTML = actors[i];
+						selectActor3.appendChild(opt);  
 					}
 					$(function() {
 						$("#year-range").slider({
@@ -245,17 +431,30 @@
 					});
 				}
 				var nameArray=[];
-				if (textValid) nameArray.push("Text: "+text);
-				if (genreValid) nameArray.push("Genre: "+genre);
-				if (countryValid) nameArray.push("Country: "+country);
-				if (yearValid) nameArray.push("Years: "+years[0]+"-"+years[1]);
-				if (ratingValid) nameArray.push("Ratings: "+ratingArray[ratings[0]]+"-"+ratingArray[ratings[1]]);
+				if (filter===0){
+					if (textValid) nameArray.push("Text: "+text);
+					if (genreValid) nameArray.push("Genre: "+genre);
+					if (countryValid) nameArray.push("Country: "+country);
+					if (yearValid) nameArray.push("Years: "+years[0]+"-"+years[1]);
+					if (ratingValid) nameArray.push("Ratings: "+ratingArray[ratings[0]]+"-"+ratingArray[ratings[1]]);
+				}
+				else if (filter===1){
+					if (directorValid) nameArray.push("Director: "+director);
+					if (actor1Valid) nameArray.push("Actor 1: "+actor1);
+					if (actor2Valid) nameArray.push("Actor 2: "+actor2);
+					if (actor3Valid) nameArray.push("Actor 3: "+actor3);
+				}
 				var name=nameArray.join('<br>');
 				if (nameArray.length===0) name="Everything";
 				var mode;
+				var temporalLines=false;
+				if (filter===0) temporalLines=temporalLines1;
+				else if (filter===1) temporalLines=temporalLines2;
 				if (temporalLines) mode='lines+markers';
 				else mode='markers';
-				var data = [
+				var data,layout;
+				
+				data = [
 				{
 					name: name,
 					type: 'scatter',
@@ -265,21 +464,103 @@
 					text: unpack(rowsFiltered, 'movie_title'),
 					marker: { size: 12 }
 				}];
-				var layout = {
-					title: 'Duration vs IMDB Score',
+				layout = {
+					showlegend: true,
+					title: 'Duration vs IMDb Score',
 					xaxis: {title: 'Duration [min]'},
-					yaxis: {title: 'Score [1 to 10]'},
-					margin: {t: 60},
+					yaxis: {title: 'IMDb Score [1 to 10]'},
+					margin: {t: 40},
 					hovermode: 'closest'
 				};
 				Plotly.plot('main-graph', data, layout);
+				var myPlot = document.getElementById('main-graph'),
+					data = data,
+					layout = layout;
+				myPlot.on('plotly_click', function(data){
+					for (var r in rows){
+						var row = rows[r];
+						if(row.movie_title == data.points[data.points.length-1].data.text[data.points[data.points.length-1].pointNumber]){
+							titleTitle.innerHTML=row.movie_title;
+							titleYear.innerHTML=row.title_year;
+							titleActor1.innerHTML="<a>"+row.actor_1_name+"</a>";
+							titleActor2.innerHTML="<a>"+row.actor_2_name+"</a>";
+							titleActor3.innerHTML="<a>"+row.actor_3_name+"</a>";
+							titleDuration.innerHTML=row.duration;
+							titleScore.innerHTML=row.imdb_score;
+							titleLanguage.innerHTML=row.language;
+							titleRating.innerHTML=row.content_rating;
+							titleGenres.innerHTML=row.genres.join(", ");
+							titleCountry.innerHTML=row.country;
+							titleTags.innerHTML=row.tag.split("|").join(", ");
+							var link,linkText;
+							link = document.createElement("a");
+							link.setAttribute("href", "#")
+							linkText = document.createTextNode(row.director_name);
+							link.appendChild(linkText);
+							link.onclick=function(){
+								directorCheck.checked = true;
+								directorValue.value = row.director_name;
+								peopleLink.click();
+							}
+							if (titleDirector.hasChildNodes()) {
+								titleDirector.removeChild(titleDirector.childNodes[0]);
+							}
+							titleDirector.appendChild(link);
+
+							link = document.createElement("a");
+							link.setAttribute("href", "#")
+							linkText = document.createTextNode(row.actor_1_name);
+							link.appendChild(linkText);
+							link.onclick=function(){
+								actor1Check.checked = true;
+								actor1Value.value = row.actor_1_name;
+								peopleLink.click();
+							}
+							if (titleActor1.hasChildNodes()) {
+								titleActor1.removeChild(titleActor1.childNodes[0]);
+							}
+							titleActor1.appendChild(link);
+
+							link = document.createElement("a");
+							link.setAttribute("href", "#")
+							linkText = document.createTextNode(row.actor_2_name);
+							link.appendChild(linkText);
+							link.onclick=function(){
+								actor2Check.checked = true;
+								actor2Value.value = row.actor_2_name;
+								peopleLink.click();
+							}
+							if (titleActor2.hasChildNodes()) {
+								titleActor2.removeChild(titleActor2.childNodes[0]);
+							}
+							titleActor2.appendChild(link);
+
+							link = document.createElement("a");
+							link.setAttribute("href", "#")
+							linkText = document.createTextNode(row.actor_3_name);
+							link.appendChild(linkText);
+							link.onclick=function(){
+								actor3Check.checked = true;
+								actor3Value.value = row.actor_3_name;
+								peopleLink.click();
+							}
+							if (titleActor3.hasChildNodes()) {
+								titleActor3.removeChild(titleActor3.childNodes[0]);
+							}
+							titleActor3.appendChild(link);
+
+							titleLink.click();
+							break;
+						}
+					}
+				});
 				if (!queries.includes(name)){
 					queries.push(name);
 					var myx=[];
 					myx.push(name);
 					var myy=[];
-					console.log(rowsFiltered.length);
 					myy.push(rowsFiltered.length);
+					data=[];
 					data = [
 					{
 						name: name,
@@ -289,15 +570,18 @@
 						marker: { size: 12 }
 					}];
 					layout = {
-						yaxis: {title: 'Amount'},
-						margin: {t: 20}
+						showlegend: true,
+						title: 'Amount of Movies per Query',
+						yaxis: {title: 'Amount of Movies'},
+						margin: {t: 40}
 					};
-					Plotly.plot('count-graph', data, layout);
+					Plotly.plot('amount-graph', data, layout);
 
 					myx=[];
 					myx.push(name);
 					myy=[];
 					myy.push(1.0*budgetSum/budgetCount);
+					data=[];
 					data = [
 					{
 						name: name+' budget',
@@ -307,8 +591,10 @@
 						marker: { size: 12 }
 					}];
 					layout = {
-						yaxis: {title: 'Budget & Gross Mean'},
-						margin: {t: 20}
+						showlegend: true,
+						title: 'Budget/Gross Mean per Query',
+						yaxis: {title: 'Budget/Gross Mean [US Dollar]'},
+						margin: {t: 40}
 					};
 					Plotly.plot('budget-gross-graph', data, layout);
 
@@ -325,51 +611,164 @@
 						marker: { size: 12 }
 					}];
 					layout = {
-						yaxis: {title: 'Budget & Gross Mean'},
-						margin: {t: 20}
+						showlegend: true,
+						title: 'Budget/Gross Mean per Query',
+						yaxis: {title: 'Budget/Gross Mean [US Dollar]'},
+						margin: {t: 40}
 					};
-					Plotly.plot('budget-gross-graph', data, layout);	
+					Plotly.plot('budget-gross-graph', data, layout);
+
+					myx=[];
+					myx.push(name);
+					myy=[];
+					myy.push(1.0*grossSum/grossCount);
+					data = [
+					{
+						name: name,
+						type: 'bar',
+						x: myx,
+						y: myy,
+						marker: { size: 12 }
+					}];
+					layout = {
+						showlegend: true,
+						title: 'Gross Mean per Query',
+						yaxis: {title: 'Gross Mean [US Dollar]'},
+						margin: {t: 40}
+					};
+					Plotly.plot('gross-graph', data, layout);
+
+					myx=[];
+					myx.push(name);
+					myy=[];
+					myy.push(1.0*budgetSum/budgetCount);
+					data = [
+					{
+						name: name,
+						type: 'bar',
+						x: myx,
+						y: myy,
+						marker: { size: 12 }
+					}];
+					layout = {
+						showlegend: true,
+						title: 'Budget Mean per Query',
+						yaxis: {title: 'Budget Mean [US Dollar]'},
+						margin: {t: 40},
+					};
+					Plotly.plot('budget-graph', data, layout);
+					data = [
+					{
+						name: name,
+						type: 'box',
+						y: unpack(rowsFiltered, 'imdb_score'),
+					}];
+					layout = {
+						showlegend: true,
+						title: 'IMDb Score Distribution per Query',
+						yaxis: {title: 'IMDb Score Distribution'},
+						margin: {t: 40},
+					};
+					Plotly.plot('score-box-graph', data, layout);
+
+					/*Esto   5*/
+					var aux1=[];
+					var aux2=[];
+					var aux3=[];
+					for(var i = 1916; i <= 2016 ; i++){
+						if (yearCount[i-1916] != 0){
+							aux1.push(scoreSum[i-1916]*1.0 / yearCount[i-1916]);
+							aux2.push(yearCount[i-1916]);
+							aux3.push(yearRange[i-1916]);
+						}
+					}
+					scoreSum=aux1;
+					yearCount=aux2;
+					yearRange=aux3;
+
+					/*Aca lo ploteo 6*/
+					console.log(yearRange);
+					console.log(scoreSum);
+					data = [
+					{
+						name: name,
+						mode: 'lines+markers',
+						type: 'scatter',
+						x: yearRange,
+						y: scoreSum,
+						marker: { size: 4 }
+					}];
+					layout = {
+						showlegend: true,
+						title: 'IMDb Score Mean per Year',
+						xaxis: {title: 'Year'},
+						yaxis: {title: 'IMDb Score Mean'},
+						margin: {t: 40}
+					};
+					Plotly.plot('score-year-graph', data, layout);
 				}
 			});
+
 		}
-		search(true);
+		search(true,0);
 		window.onresize = function() {
 			Plotly.Plots.resize(d3.select('#main-graph').node());
-			Plotly.Plots.resize(d3.select('#count-graph').node());
+			Plotly.Plots.resize(d3.select('#amount-graph').node());
 			Plotly.Plots.resize(d3.select('#budget-gross-graph').node());
+			Plotly.Plots.resize(d3.select('#gross-graph').node());
+			Plotly.Plots.resize(d3.select('#budget-graph').node());
+			Plotly.Plots.resize(d3.select('#score-box-graph').node());
+			Plotly.Plots.resize(d3.select('#score-year-graph').node());
 		};
-		function showSearchByMovie(){
-			menu1.style.display = 'block'; 
-			menu2.style.display = 'none'; 
-			menu3.style.display = 'none'; 
-			button1.style.borderBottom = 'none';
-			button1.style.background = 'white'; 
-			button2.style.borderBottom = 'solid';
-			//button2.style.background = 'gray';
-			button3.style.borderBottom = 'solid';
-			//button3.style.background = 'gray';
+		function budgetAndGross(){
+			grossGraph.style.display='none';
+			budgetGraph.style.display='none';
+			budgetAndGrossGraph.style.display='block';
+			Plotly.Plots.resize(d3.select('#budget-gross-graph').node());
 		}
-		function showSearchByPeople(){
-			menu1.style.display = 'none'; 
-			menu2.style.display = 'block'; 
-			menu3.style.display = 'none'; 
-			button1.style.borderBottom = 'solid';
-			//button1.style.background = 'gray'; 
-			button2.style.borderBottom = 'none';
-			button2.style.background = 'white';
-			button3.style.borderBottom = 'solid';
-			//button3.style.background = 'gray';
+		function grossOnly(){
+			budgetAndGrossGraph.style.display='none';
+			budgetGraph.style.display='none';
+			grossGraph.style.display='block';
+			Plotly.Plots.resize(d3.select('#gross-graph').node());
 		}
-		function showOptions(){
-			menu1.style.display = 'none'; 
-			menu2.style.display = 'none'; 
-			menu3.style.display = 'block'; 
-			button1.style.borderBottom = 'solid';
-			//button1.style.background = 'gray'; 
-			button2.style.borderBottom = 'solid';
-			//button2.style.background = 'gray';
-			button3.style.borderBottom = 'none';
-			button3.style.background = 'white';
+		function budgetOnly(){
+			budgetAndGrossGraph.style.display='none';
+			grossGraph.style.display='none';
+			budgetGraph.style.display='block';
+			Plotly.Plots.resize(d3.select('#budget-graph').node());
+		}
+		var second = "400px";
+  		var third = "800px";
+		function barChartsPreference(){
+			amountGraph.style.top=second;
+			budgetAndGrossGraph.style.top=second;
+			grossGraph.style.top=second;
+			budgetGraph.style.top=second;
+			scoreBoxGraph.style.top=third;
+			scoreYearGraph.style.top=third;
+
+			Plotly.Plots.resize(d3.select('#amount-graph').node());
+			Plotly.Plots.resize(d3.select('#budget-gross-graph').node());
+			Plotly.Plots.resize(d3.select('#gross-graph').node());
+			Plotly.Plots.resize(d3.select('#budget-graph').node());
+			Plotly.Plots.resize(d3.select('#score-box-graph').node());
+			Plotly.Plots.resize(d3.select('#score-year-graph').node());
+		}
+		function distributionsPreference(){
+			amountGraph.style.top=third;
+			budgetAndGrossGraph.style.top=third;
+			grossGraph.style.top=third;
+			budgetGraph.style.top=third;
+			scoreBoxGraph.style.top=second;
+			scoreYearGraph.style.top=second;
+
+			Plotly.Plots.resize(d3.select('#amount-graph').node());
+			Plotly.Plots.resize(d3.select('#budget-gross-graph').node());
+			Plotly.Plots.resize(d3.select('#gross-graph').node());
+			Plotly.Plots.resize(d3.select('#budget-graph').node());
+			Plotly.Plots.resize(d3.select('#score-box-graph').node());
+			Plotly.Plots.resize(d3.select('#score-year-graph').node());
 		}
 	</script>
 </body>
